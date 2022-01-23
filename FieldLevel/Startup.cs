@@ -27,7 +27,8 @@ namespace FieldLevel
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            // Add memory cache dependencies for temp storage of TypicodePosts
+            services.AddMemoryCache();
             services.AddControllers();
             //Add Client for TypiCode
             services.AddHttpClient(Typicode.Client, client =>
