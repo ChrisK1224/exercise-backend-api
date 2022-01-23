@@ -1,6 +1,7 @@
 ﻿using FieldLevel.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +18,17 @@ namespace FieldLevel.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMemoryCache _memoryCache;
+        private readonly ILogger _logger;
         private readonly string TypicodeCacheKey = "typicode";
-        public FieldLevelController(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache)
+        public FieldLevelController(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache, ILogger<FieldLevelController> logger)
         {
             _httpClientFactory = httpClientFactory;
             _memoryCache = memoryCache;
+            _logger = logger;
         }
         [HttpGet]
         [Route("LatestPosts")]
-        public async Task<ActionResult<TypicodePost[]>> GetLatestPosts()
+        public async Task<ActionResult<TypicodePost[]>> LatestPosts()
         {
             try
             {
@@ -49,11 +52,13 @@ namespace FieldLevel.Controllers
                 }
                 else
                 {
+                    _logger.LogError("Error in typeicode call from FieldLevelController.LatestPosts");
                     return BadRequest();
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError(ex.ToString());
                 return BadRequest();
             }
         }
