@@ -39,7 +39,7 @@ namespace FieldLevel.Controllers
                 HttpResponseMessage result = await client.GetAsync(Typicode.Calls.Posts);
                 if (result.IsSuccessStatusCode)
                 {
-                    var cacheOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(60));
+                    var cacheOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
                     var jsonResult = result.Content.ReadAsStringAsync().Result;
                     //Group the results by userId and pull only the latest Id per user
                     cachedPosts = TypicodePost.GroupAndMax(jsonResult);
